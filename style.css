@@ -127,6 +127,6 @@ body {
   margin-left: -10px;
   bottom: 100%;
   left: 50%;
-  border: solid transparent;
+  border: 10px solid transparent;
   border-bottom-color: var(--byzantine);
 }
