@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Progressbar</title>
+    <style>
+        body {
+            /* Colors from https://coolors.co/75dddd-84c7d0-9297c4-9368b7-aa3e98 */
+            --medium-turquoise: #75ddddff;
+            --middle-blue: #84c7d0ff;
+            --blue-bell: #9297c4ff;
+            --amethyst: #9368b7ff;
+            --byzantine: #aa3e98ff;
+        }
+
+        /* Progressbar and steps in bar */
+        .progressbar {
+            display: flex;
+            flex-direction: row;
+        }
+
+        .step-item {
+            flex: 1;
+        }
+
+        /* Current step will "Pop out" the current item */
+        .step-item.current-step {
+            flex: 2;
+        }
+
+        /* Using flex column to center tooltip with currentstep */
+        .progressbar-tooltip-wrapper {
+            display: flex;
+            flex-direction: column;
+        }
+        #tooltip-root {
+            opacity: 0;
+            z-index: -1;
+            transition: opacity 1s, z-index 1s;
+        }
+
+        #tooltip-root.show {
+            opacity: 1;
+            z-index: 2;
+            transition: opacity 1s, z-index 1s;
+        }
+
+
+
+    </style>
+</head>
+<body>
+    <header>
+        <h1>A Simple Static Progressbar with Arrows and Tooltip</h1>
+    </header>
+    <main>
+        <div class="progressbar">
+            <!-- js will move tooldtip to correct step-->
+            <div class="step-item" id="step-1">Step 1</div>
+            <div class="step-item" id="step-2">Step 2</div>
+            <div class="step-item" id="step-3">Step 3</div>
+            <div class="step-item" id="step-4">Step 4</div>
+        </div>
+        <div id="tooltip-root">
+            <div class="tooltip-container">
+                <!-- Place text or other items here -->
+                <p>Some Text Goes Here</p>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        // Utilize css transitions and class toggling to show/hide tooltip
+        function toggleToolTip() {
+            const tooltip = document.getElementById("tooltip-root");
+            tooltip.classList.toggle("show");
+        }
+
+        // "DocumentReady" event
+        document.addEventListener("DOMContentLoaded", () => {
+            // Index of step with tooltip
+            currStepIndex = 2
+
+            // Get all elements
+            const progressRoot = document.getElementById("progressbar")
+            const tooltipRoot = document.getElementById("tooltip-root");
+
+            // Get current element in flex progress bar
+            const currStepElem = progressRoot.children[currStepIndex]
+            // Add class to make this element "pop out"
+            currStepElem.classList.toggle("current-step")
+
+            // Add hover events
+            currStepElem.addEventListener("mouseover", toggleToolTip);
+            currStepElem.addEventListener("mouseout", toggleToolTip)
+
+            // Create flex column wrapper
+            const wrapper = document.createElement("div")
+            wrapper.classList.add("progressbar-tooltip-wrapper")
+
+            // Move wrapper just before our currentElem
+            currStepElem.before(wrapper)
+            // Make currStepElem a child of the wrapper
+            wrapper.append(currStepElem)
+            // Make tooltipRoot a child of the wrapper
+            wrapper.append(tooltipRoot)
+
+            // 💥 Tooltip and hover events are set
+        })
+    </script>
+</body>
+</html>
