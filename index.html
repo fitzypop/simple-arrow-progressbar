@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simple Progressbar</title>
+    <script src="app.js"></script>
     <style>
         body {
             /* Colors from https://coolors.co/75dddd-84c7d0-9297c4-9368b7-aa3e98 */
@@ -18,24 +19,92 @@
         /* Progressbar and steps in bar */
         .progressbar {
             display: flex;
+            align-items: center;
             flex-direction: row;
         }
 
         .step-item {
             flex: 1;
+            height: 24px;
+            text-align: left;
+            color: black;
+            padding-left: 20px;
+            line-height: 25px;
         }
 
         /* Current step will "Pop out" the current item */
         .step-item.current-step {
-            flex: 2;
+            max-height: 36px;
+            font-size: 16px;
+            line-height: 35px;
+            box-shadow: 0px 4-px 4-px rgba(0, 0, 0, 0.25);
+            border-radius: 4px;
+            cursor: pointer;
+            z-index: 3;
+        }
+
+        /* Arrows */
+        .step-item::before {
+            content: '';
+            position: absolute;
+            /* Triangle shape */
+            border-top: 12px solid transparent;
+            border-bottom: 12px solid transparent;
+            border-left: 16px solid transparent;
+            transform: translateX(-20px);
+            z-index: 1;
+        }
+
+        .step-item.current-step::before {
+            transform: translate(-20px, 5px);
+        }
+
+        #step-1 {
+            background-color: var(--medium-turquoise);
+        }
+
+        #step-1::before {
+            display: none;
+        }
+
+        #step-2 {
+            background-color: var(--middle-blue);
+        }
+
+        #step-2::before {
+            border-left-color: var(--medium-turquoise);
+        }
+
+        #step-3 {
+            background-color: var(--blue-bell);
+        }
+
+        #step-3::before {
+            border-left-color: var(--middle-blue);
+
+        }
+
+        #step-4 {
+            background-color: var(--amethyst);
+        }
+
+        #step-4::before {
+            border-left-color: var(--blue-bell);
         }
 
         /* Using flex column to center tooltip with currentstep */
         .progressbar-tooltip-wrapper {
             display: flex;
             flex-direction: column;
+            position: relative;
+            width: 35%;
         }
+
         #tooltip-root {
+            position: absolute;
+            align-self: center;
+            top: 10px;
+
             opacity: 0;
             z-index: -1;
             transition: opacity 1s, z-index 1s;
@@ -47,8 +116,6 @@
             transition: opacity 1s, z-index 1s;
         }
 
-
-
     </style>
 </head>
 <body>
@@ -56,13 +123,15 @@
         <h1>A Simple Static Progressbar with Arrows and Tooltip</h1>
     </header>
     <main>
-        <div class="progressbar">
+        <div class="progressbar" id="progressbar-root">
             <!-- js will move tooldtip to correct step-->
             <div class="step-item" id="step-1">Step 1</div>
             <div class="step-item" id="step-2">Step 2</div>
             <div class="step-item" id="step-3">Step 3</div>
             <div class="step-item" id="step-4">Step 4</div>
         </div>
+
+
         <div id="tooltip-root">
             <div class="tooltip-container">
                 <!-- Place text or other items here -->
@@ -71,45 +140,5 @@
         </div>
 
     </main>
-
-    <script>
-        // Utilize css transitions and class toggling to show/hide tooltip
-        function toggleToolTip() {
-            const tooltip = document.getElementById("tooltip-root");
-            tooltip.classList.toggle("show");
-        }
-
-        // "DocumentReady" event
-        document.addEventListener("DOMContentLoaded", () => {
-            // Index of step with tooltip
-            currStepIndex = 2
-
-            // Get all elements
-            const progressRoot = document.getElementById("progressbar")
-            const tooltipRoot = document.getElementById("tooltip-root");
-
-            // Get current element in flex progress bar
-            const currStepElem = progressRoot.children[currStepIndex]
-            // Add class to make this element "pop out"
-            currStepElem.classList.toggle("current-step")
-
-            // Add hover events
-            currStepElem.addEventListener("mouseover", toggleToolTip);
-            currStepElem.addEventListener("mouseout", toggleToolTip)
-
-            // Create flex column wrapper
-            const wrapper = document.createElement("div")
-            wrapper.classList.add("progressbar-tooltip-wrapper")
-
-            // Move wrapper just before our currentElem
-            currStepElem.before(wrapper)
-            // Make currStepElem a child of the wrapper
-            wrapper.append(currStepElem)
-            // Make tooltipRoot a child of the wrapper
-            wrapper.append(tooltipRoot)
-
-            // 💥 Tooltip and hover events are set
-        })
-    </script>
 </body>
 </html>
