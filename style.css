@@ -1,0 +1,107 @@
+body {
+  /* Colors from https://coolors.co/75dddd-84c7d0-9297c4-9368b7-aa3e98 */
+  --medium-turquoise: #75ddddff;
+  --middle-blue: #84c7d0ff;
+  --blue-bell: #9297c4ff;
+  --amethyst: #9368b7ff;
+  --byzantine: #aa3e98ff;
+}
+
+/* Progressbar and steps in bar */
+.progressbar {
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+}
+
+.step-item {
+  flex: 1;
+  height: 24px;
+  text-align: left;
+  color: black;
+  padding-left: 20px;
+  line-height: 25px;
+}
+
+/* Current step will "Pop out" the current item */
+.step-item.current-step {
+  max-height: 36px;
+  font-size: 16px;
+  line-height: 35px;
+  box-shadow: 0px 4-px 4-px rgba(0, 0, 0, 0.25);
+  border-radius: 4px;
+  cursor: pointer;
+  z-index: 3;
+}
+
+/* Arrows */
+.step-item::before {
+  content: "";
+  position: absolute;
+  /* Triangle shape */
+  border-top: 12px solid transparent;
+  border-bottom: 12px solid transparent;
+  border-left: 16px solid transparent;
+  transform: translateX(-20px);
+  z-index: 1;
+}
+
+.step-item.current-step::before {
+  transform: translate(-20px, 5px);
+}
+
+#step-1 {
+  background-color: var(--medium-turquoise);
+}
+
+#step-1::before {
+  display: none;
+}
+
+#step-2 {
+  background-color: var(--middle-blue);
+}
+
+#step-2::before {
+  border-left-color: var(--medium-turquoise);
+}
+
+#step-3 {
+  background-color: var(--blue-bell);
+}
+
+#step-3::before {
+  border-left-color: var(--middle-blue);
+}
+
+#step-4 {
+  background-color: var(--amethyst);
+}
+
+#step-4::before {
+  border-left-color: var(--blue-bell);
+}
+
+/* Using flex column to center tooltip with currentstep */
+.progressbar-tooltip-wrapper {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  width: 35%;
+}
+
+#tooltip-root {
+  position: absolute;
+  align-self: center;
+  top: 10px;
+
+  opacity: 0;
+  z-index: -1;
+  transition: opacity 1s, z-index 1s;
+}
+
+#tooltip-root.show {
+  opacity: 1;
+  z-index: 2;
+  transition: opacity 1s, z-index 1s;
+}
