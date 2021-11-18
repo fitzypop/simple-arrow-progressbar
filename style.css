@@ -39,8 +39,7 @@ body {
   content: "";
   position: absolute;
   /* Triangle shape */
-  border-top: 12px solid transparent;
-  border-bottom: 12px solid transparent;
+  border: 12px solid transparent;
   border-left: 16px solid transparent;
   transform: translateX(-20px);
   z-index: 1;
