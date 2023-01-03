@@ -1,78 +1,57 @@
-// Utilize css transitions and class toggling to show/hide tooltip
-let currStepIndex = 1;
-let currStepElem = null;
-let tooltipRoot = null;
-let progressbarRoot = null;
-let wrapper = null;
+class Progressbar {
+  #currStepIndex = 0;
+  #currStepElem = null;
+  #tooltipRoot = null;
+  #progressbarRoot = null;
+  #wrapper = null;
 
-function toggleToolTip() {
-  const tooltip = document.getElementById("tooltip-root");
-  tooltip.classList.toggle("show");
-}
+  constructor(index=1){
+    this.#currStepIndex = index;
+    // Get all elements
+    this.#progressbarRoot = document.getElementById("progressbar-root");
+    this.#tooltipRoot = document.getElementById("tooltip-root");
 
-function removeOldStep(elem) {
-  elem.classList.toggle("current-step");
-  elem.removeEventListener("mouseover", toggleToolTip);
-  elem.removeEventListener("mouseout", toggleToolTip);
-
-  progressbarRoot.insertBefore(elem, wrapper)
-  wrapper.removeChild(tooltipRoot);
-  progressbarRoot.removeChild(wrapper);
-}
-
-function setCurrentStep(num) {
-  num -= 1;
-  if (currStepIndex === num) {
-    console.log("same step selected")
-    return;
-  }
-  else if (progressbarRoot.children.length <= num) {
-    console.log("not enough steps");
-    return;
+    // Get current element in flex progress bar
+    this.#currStepElem = this.#progressbarRoot.children[this.#currStepIndex];
+    this.moveElems();
   }
 
-  if (currStepElem) {
-    removeOldStep(currStepElem);
+  toggleToolTip() {
+    // const tooltip = document.getElementById("tooltip-root");
+    this.#tooltipRoot.classList.toggle("show");
   }
 
-  currStepIndex = num;
-  currStepElem = progressbarRoot.children[currStepIndex];
-  moveElems(currStepElem, tooltipRoot);
-}
+  moveElems() {
+    this.#currStepElem.classList.toggle("current-step");
 
-function moveElems(elem, tooltipElem) {
-  elem.classList.toggle("current-step");
+    // Add hover events
+    this.#currStepElem.addEventListener("mouseover", this.toggleToolTip.bind(this), { passive: true });
+    this.#currStepElem.addEventListener("mouseout", this.toggleToolTip.bind(this), { passive: true });
 
-  // Add hover events
-  elem.addEventListener("mouseover", toggleToolTip, { passive: true });
-  elem.addEventListener("mouseout", toggleToolTip, { passive: true });
-
-  // Create flex column wrapper
-  if (!wrapper) {
-    wrapper = document.getElementById("tooltip-column-wrapper");
-    if (!wrapper) {
-      wrapper = document.createElement("div");
-      wrapper.id = "tooltip-column-wrapper";
+    // Create flex column wrapper
+    if (!this.#wrapper) {
+      this.#wrapper = document.getElementById("tooltip-column-wrapper");
+      if (!this.#wrapper) {
+        this.#wrapper = document.createElement("div");
+        this.#wrapper.id = "tooltip-column-wrapper";
+      }
     }
+
+    // Move wrapper just before our currentElem
+    this.#currStepElem.before(this.#wrapper);
+    // Make currStepElem a child of the wrapper
+    this.#wrapper.append(this.#currStepElem);
+    // Make tooltipRoot a child of the wrapper
+    this.#wrapper.append(this.#tooltipRoot);
+
+    // 💥 Tooltip and hover events are set
   }
-
-  // Move wrapper just before our currentElem
-  elem.before(wrapper);
-  // Make currStepElem a child of the wrapper
-  wrapper.append(elem);
-  // Make tooltipRoot a child of the wrapper
-  wrapper.append(tooltipElem);
-
-  // 💥 Tooltip and hover events are set
 }
+
+
+
 
 // "DocumentReady" event
 document.addEventListener("DOMContentLoaded", () => {
-  // Get all elements
-  progressbarRoot = document.getElementById("progressbar-root");
-  tooltipRoot = document.getElementById("tooltip-root");
-
-  // Get current element in flex progress bar
-  currStepElem = progressbarRoot.children[currStepIndex];
-  moveElems(currStepElem, tooltipRoot);
+  const progressbar = new Progressbar();
 });
